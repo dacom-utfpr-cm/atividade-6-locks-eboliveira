@@ -23,4 +23,18 @@ public class SharedFifoQueue {
             lock.unlock();
         }
     }
+
+    public Object take() throws InterruptedException {
+        lock.lock();
+        try {
+            while(count == 0){
+                notEmpty.await();
+            }
+            count-=1;
+            notFull.signal();
+            return items[count];
+        }finally {
+            lock.unlock();
+        }
+    }
 }
